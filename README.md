@@ -63,7 +63,7 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
    しばらくするとグラスのホーム画面に EvEnglish が出ます。
 
 - Private build は自分のアカウントでしか使えません。ほかの人にも使ってもらうときは Even Hub の Beta Testing か、審査を通して公開します（[App Submission](https://hub.evenrealities.com/docs/ship/app-submission)）。
-- main やプルリクエストのビルドは、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。このバージョンはスマホ画面のタイトル横（`EvEnglish v0.1.42`）にも表示されます。
+- main のビルド（手動実行を含む）は、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。このバージョンはスマホ画面のタイトル横（`EvEnglish v0.1.42`）にも表示されます。
 - リリースのノートには、前回のビルド（`latest` は前回の main ビルド、`v0.2.0` のようなタグはひとつ前のタグ）からのコミットをまとめた **Change log** が 500 文字以内で入っています。アップロード時の Change log 欄にそのまま貼り付けられます。
 - 詳しくは公式の [Private Testing](https://hub.evenrealities.com/docs/test/private-testing) を参照してください。
 
@@ -75,8 +75,11 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
 |---|---|
 | main へのプッシュ | リリース「最新ビルド (main)」（タグ `latest`）を最新ビルドで作り直す（日付も更新される） |
 | `v0.1.0` のようなタグのプッシュ | そのバージョンのリリースを作成（`app.json` の `version` をそのまま使う。タグと違うと失敗します） |
-| プルリクエスト | Actions の実行結果ページの Artifacts に `evenglish-ehpk`（zip。中に `.ehpk`） |
 | Actions タブから手動実行（Run workflow） | main へのプッシュと同じ |
+
+どの場合も、Actions の実行結果ページの Artifacts に `evenglish-ehpk`（zip。中に `.ehpk`）も置かれます。
+
+プルリクエストでは `.github/workflows/ci.yml` が型チェック・テスト・ビルドだけを行い、`.ehpk` は作りません。ワークフローを分けてあるので、プルリクエストの実行で main のバージョン番号が飛ぶこともありません。
 
 バージョン付きのリリースを作る例です。
 
@@ -258,6 +261,7 @@ assets/icon.png           Even Hub に登録するアプリアイコン（24x24 
 scripts/make-icon.mjs     アイコンの生成スクリプト（ドット絵はこの中に文字で書いてある）
 docs/screenshots/         README のスクリーンショット（シミュレーターのグラス画面）
 .github/workflows/build.yml  .ehpk を作ってリリースに置く GitHub Actions
+.github/workflows/ci.yml     プルリクエストの型チェック・テスト・ビルド
 ```
 
 ### 教材を追加する
