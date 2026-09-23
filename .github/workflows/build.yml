@@ -2,7 +2,7 @@ name: Build .ehpk
 
 # main へのプッシュ、v から始まるタグ、プルリクエスト、手動実行でビルドする。
 #  - どの場合も Actions の Artifacts に evenglish.ehpk を置く
-#  - main へのプッシュ / 手動実行では、リリース「latest」の .ehpk を最新ビルドに差し替える
+#  - main へのプッシュ / 手動実行では、リリース「latest」を最新ビルドで作り直す
 #  - タグ（v0.1.0 など）では、そのバージョンのリリースを作る
 on:
   push:
@@ -63,15 +63,13 @@ jobs:
           app_ver=$(node -p "require('./app.json').version")
           notes="main の最新ビルドです（app.json の version: ${app_ver} / commit: ${GITHUB_SHA::7}）。
           evenglish.ehpk をダウンロードして、Even Hub の開発者サイトの Private builds にアップロードしてください。"
-          # タグ latest を今のコミットに付け直してから、リリースの中身を差し替える
+          # 差し替えだとリリースの日付が最初に作ったときのままになるので、毎回作り直す
+          gh release delete latest --yes || true
+          # タグ latest を今のコミットに付け直す
           git tag -f latest
           git push -f origin refs/tags/latest
-          if gh release view latest >/dev/null 2>&1; then
-            gh release edit latest --prerelease --title "最新ビルド (main)" --notes "$notes"
-          else
-            gh release create latest --prerelease --title "最新ビルド (main)" --notes "$notes"
-          fi
-          gh release upload latest evenglish.ehpk --clobber
+          gh release create latest evenglish.ehpk --prerelease --verify-tag \
+            --title "最新ビルド (main)" --notes "$notes"
 
       - name: Create a versioned release
         if: startsWith(github.ref, 'refs/tags/v')

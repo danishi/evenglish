@@ -64,7 +64,7 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
 
 | きっかけ | できるもの |
 |---|---|
-| main へのプッシュ | リリース「最新ビルド (main)」（タグ `latest`）の `evenglish.ehpk` を差し替え |
+| main へのプッシュ | リリース「最新ビルド (main)」（タグ `latest`）を最新ビルドで作り直す（日付も更新される） |
 | `v0.1.0` のようなタグのプッシュ | そのバージョンのリリースを作成（タグと `app.json` の `version` が違うと失敗します） |
 | プルリクエスト | Actions の実行結果ページの Artifacts に `evenglish-ehpk`（zip。中に `.ehpk`） |
 | Actions タブから手動実行（Run workflow） | main へのプッシュと同じ |
