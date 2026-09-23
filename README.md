@@ -3,6 +3,14 @@
 Even Realities G2 のグラスで使う、日本人向けの英語学習アプリです。Even Hub アプリとして動きます。
 電車の待ち時間のようなスキマ時間に、単語・フレーズ・文法を少しずつ進められます。
 
+| メニュー | 4択クイズ |
+|---|---|
+| ![メニュー画面](docs/screenshots/home.png) | ![4択クイズ](docs/screenshots/quiz.png) |
+| **単語カード（表）** | **単語カード（裏）** |
+| ![単語カードの表](docs/screenshots/card-front.png) | ![単語カードの裏](docs/screenshots/card-back.png) |
+
+<sub>Even Hub シミュレーターのグラス画面（576×288）</sub>
+
 | 教材 | 数 | 内容 |
 |---|---|---|
 | 単語 | 392 語 | 基礎 / 日常 / ビジネス / 上級 の4レベル。カタカナ読み・品詞・意味・例文・和訳つき |
@@ -248,6 +256,7 @@ tests/                    Vitest のテスト
 app.json                  Even Hub のマニフェスト
 assets/icon.png           Even Hub に登録するアプリアイコン（24x24 白黒）
 scripts/make-icon.mjs     アイコンの生成スクリプト（ドット絵はこの中に文字で書いてある）
+docs/screenshots/         README のスクリーンショット（シミュレーターのグラス画面）
 .github/workflows/build.yml  .ehpk を作ってリリースに置く GitHub Actions
 ```
 
