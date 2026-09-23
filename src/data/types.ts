@@ -13,6 +13,8 @@ export interface Word {
   en: string
   /** 品詞（名・動・形・副・前・接・句） */
   pos: string
+  /** カタカナ読み */
+  kana: string
   ja: string
   ex: string
   exJa: string
@@ -31,6 +33,8 @@ export const SCENE_LABELS: Record<PhraseScene, string> = {
 export interface Phrase {
   id: string
   en: string
+  /** カタカナ読み */
+  kana: string
   ja: string
   scene: PhraseScene
   /** 使い方のポイント（任意） */

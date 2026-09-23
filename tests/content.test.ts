@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { PHRASE_KANA, WORD_KANA } from '../src/data/kana'
 import { GRAMMAR } from '../src/data/grammar'
 import { PHRASES } from '../src/data/phrases'
 import { WORDS } from '../src/data/words'
@@ -7,8 +8,8 @@ import { GRAMMAR_BODY_LINES, TEXT_INNER_W } from '../src/glasses/layout'
 
 function allText(): string {
   return [
-    ...WORDS.flatMap((w) => [w.en, w.pos, w.ja, w.ex, w.exJa]),
-    ...PHRASES.flatMap((p) => [p.en, p.ja, p.note ?? '']),
+    ...WORDS.flatMap((w) => [w.en, w.pos, w.kana, w.ja, w.ex, w.exJa]),
+    ...PHRASES.flatMap((p) => [p.en, p.kana, p.ja, p.note ?? '']),
     ...GRAMMAR.flatMap((g) => [g.title, ...g.pages, ...g.quiz.flatMap((q) => [q.q, ...q.choices, q.explain])]),
   ].join('\n')
 }
@@ -16,6 +17,18 @@ function allText(): string {
 describe('コンテンツ', () => {
   it('グラスのフォントに無い文字を使っていない', () => {
     expect(missingGlyphs(allText())).toEqual([])
+  })
+
+  it('すべての単語・フレーズにカタカナ読みがあり、1行に収まる', () => {
+    for (const x of [...WORDS, ...PHRASES]) {
+      expect(x.kana, x.en).toMatch(/^[ァ-ヴー ]+$/)
+      expect(lineCount(`［${x.kana}］`, TEXT_INNER_W), x.en).toBe(1)
+    }
+  })
+
+  it('カタカナ読みの表に教材に無い見出しが残っていない', () => {
+    const en = new Set([...WORDS, ...PHRASES].map((x) => x.en))
+    expect([...Object.keys(WORD_KANA), ...Object.keys(PHRASE_KANA)].filter((k) => !en.has(k))).toEqual([])
   })
 
   it('ID が重複していない', () => {

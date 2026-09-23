@@ -86,9 +86,12 @@ describe('GlassesApp', () => {
     const s = app.screen as Extract<typeof app.screen, { kind: 'cards' }>
     const firstId = s.ids[0]
     expect(display.text()).toContain('答えを見る')
+    const kana = app.wordPool().find((w) => w.id === firstId)!.kana
+    expect(display.text()).not.toContain(kana)
 
     await send({ type: 'click' })
     expect(display.text()).toContain('覚えた')
+    expect(display.text()).toContain(`［${kana}］`)
     await send({ type: 'click' })
     expect(store.data.cards[firstId].box).toBe(1)
 

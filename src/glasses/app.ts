@@ -377,14 +377,14 @@ export class GlassesApp {
         const front = jaFirst ? `\n${w.ja}\n（${w.pos}）` : `\n${w.en}\n（${w.pos}）`
         return composeScreen(title, tag, front, frontFooter)
       }
-      return composeScreen(title, tag, `${w.en}（${w.pos}）\n= ${w.ja}\n\n${w.ex}\n${w.exJa}`, backFooter)
+      return composeScreen(title, tag, `${w.en}（${w.pos}）\n［${w.kana}］\n= ${w.ja}\n\n${w.ex}\n${w.exJa}`, backFooter)
     }
 
     const p = this.content.phrases.find((x) => x.id === id)!
     const title = `${s.review ? 'おさらい' : 'フレーズ'}  ${pos}`
     const tag = SCENE_LABELS[p.scene]
     if (!s.revealed) return composeScreen(title, tag, `\n${jaFirst ? p.ja : p.en}`, frontFooter)
-    return composeScreen(title, tag, `${p.en}\n= ${p.ja}${p.note ? `\n\n${p.note}` : ''}`, backFooter)
+    return composeScreen(title, tag, `${p.en}\n［${p.kana}］\n= ${p.ja}${p.note ? `\n\n${p.note}` : ''}`, backFooter)
   }
 
   private sessionDoneText(s: Extract<Screen, { kind: 'sessionDone' }>): string {

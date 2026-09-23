@@ -1,4 +1,5 @@
 import type { Word, WordLevel } from './types'
+import { WORD_KANA } from './kana'
 
 type Row = [en: string, pos: string, ja: string, ex: string, exJa: string]
 
@@ -410,6 +411,7 @@ function build(level: WordLevel, prefix: string, rows: Row[]): Word[] {
   return rows.map(([en, pos, ja, ex, exJa], i) => ({
     id: `${prefix}${String(i + 1).padStart(3, '0')}`,
     en,
+    kana: WORD_KANA[en] ?? '',
     pos,
     ja,
     ex,

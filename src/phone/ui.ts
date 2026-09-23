@@ -138,7 +138,7 @@ export function mountPhoneUI(
         .filter((w) => hit(w.en, w.ja))
         .map(
           (w) => `<details class="item"><summary>${mark(w.id)}<b>${esc(w.en)}</b><span class="dim">（${esc(w.pos)}）${esc(w.ja)}</span></summary>
-            <p>${esc(w.ex)}<br><span class="dim">${esc(w.exJa)}</span></p><p class="dim">${LEVEL_LABELS[w.level]}</p></details>`,
+            <p class="dim">［${esc(w.kana)}］</p><p>${esc(w.ex)}<br><span class="dim">${esc(w.exJa)}</span></p><p class="dim">${LEVEL_LABELS[w.level]}</p></details>`,
         )
         .join('')
     } else if (tab === 'phrases') {
@@ -146,7 +146,7 @@ export function mountPhoneUI(
         .filter((p) => hit(p.en, p.ja, p.note ?? ''))
         .map(
           (p) => `<details class="item"><summary>${mark(p.id)}<b>${esc(p.en)}</b></summary>
-            <p>${esc(p.ja)}</p>${p.note ? `<p class="dim">${esc(p.note)}</p>` : ''}<p class="dim">${SCENE_LABELS[p.scene]}</p></details>`,
+            <p class="dim">［${esc(p.kana)}］</p><p>${esc(p.ja)}</p>${p.note ? `<p class="dim">${esc(p.note)}</p>` : ''}<p class="dim">${SCENE_LABELS[p.scene]}</p></details>`,
         )
         .join('')
     } else {
