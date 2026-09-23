@@ -55,7 +55,8 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
    しばらくするとグラスのホーム画面に EvEnglish が出ます。
 
 - Private build は自分のアカウントでしか使えません。ほかの人にも使ってもらうときは Even Hub の Beta Testing か、審査を通して公開します（[App Submission](https://hub.evenrealities.com/docs/ship/app-submission)）。
-- 同じバージョンのアップロードを受け付けてもらえないときは、`app.json` と `package.json` の `version` を上げてから main にプッシュしてください。
+- main やプルリクエストのビルドは、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。
+- リリースのノートには、前回のビルド（`latest` は前回の main ビルド、`v0.2.0` のようなタグはひとつ前のタグ）からのコミットをまとめた **Change log** が 500 文字以内で入っています。アップロード時の Change log 欄にそのまま貼り付けられます。
 - 詳しくは公式の [Private Testing](https://hub.evenrealities.com/docs/test/private-testing) を参照してください。
 
 ### パッケージが作られるタイミング
@@ -65,7 +66,7 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
 | きっかけ | できるもの |
 |---|---|
 | main へのプッシュ | リリース「最新ビルド (main)」（タグ `latest`）を最新ビルドで作り直す（日付も更新される） |
-| `v0.1.0` のようなタグのプッシュ | そのバージョンのリリースを作成（タグと `app.json` の `version` が違うと失敗します） |
+| `v0.1.0` のようなタグのプッシュ | そのバージョンのリリースを作成（`app.json` の `version` をそのまま使う。タグと違うと失敗します） |
 | プルリクエスト | Actions の実行結果ページの Artifacts に `evenglish-ehpk`（zip。中に `.ehpk`） |
 | Actions タブから手動実行（Run workflow） | main へのプッシュと同じ |
 
@@ -73,6 +74,7 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
 
 ```bash
 # app.json と package.json の version を 0.2.0 にしてコミットしたあと
+# （main のビルドは 0.2.<実行番号> になるので、タグは x.y.0 にすると重なりません）
 git tag v0.2.0
 git push origin v0.2.0
 ```
