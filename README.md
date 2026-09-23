@@ -222,6 +222,7 @@ GitHub Actions でも同じものが自動で作られるので、手元で作�
 | `npm run typecheck` | 型チェック |
 | `npm run build` | 本番ビルド（`dist/`） |
 | `npm run pack` | ビルドして `.ehpk` を作成（GitHub Actions でも自動で作られます） |
+| `npm run icon` | アプリアイコン `assets/icon.png` を作り直す |
 
 ### ディレクトリ構成
 
@@ -243,6 +244,8 @@ src/
   phone/ui.ts             スマホ側の画面（設定・学習状況・教材一覧）
 tests/                    Vitest のテスト
 app.json                  Even Hub のマニフェスト
+assets/icon.png           Even Hub に登録するアプリアイコン（24x24 白黒）
+scripts/make-icon.mjs     アイコンの生成スクリプト（ドット絵はこの中に文字で書いてある）
 .github/workflows/build.yml  .ehpk を作ってリリースに置く GitHub Actions
 ```
 
