@@ -55,7 +55,7 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
    しばらくするとグラスのホーム画面に EvEnglish が出ます。
 
 - Private build は自分のアカウントでしか使えません。ほかの人にも使ってもらうときは Even Hub の Beta Testing か、審査を通して公開します（[App Submission](https://hub.evenrealities.com/docs/ship/app-submission)）。
-- main やプルリクエストのビルドは、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。
+- main やプルリクエストのビルドは、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。このバージョンはスマホ画面のタイトル横（`EvEnglish v0.1.42`）にも表示されます。
 - リリースのノートには、前回のビルド（`latest` は前回の main ビルド、`v0.2.0` のようなタグはひとつ前のタグ）からのコミットをまとめた **Change log** が 500 文字以内で入っています。アップロード時の Change log 欄にそのまま貼り付けられます。
 - 詳しくは公式の [Private Testing](https://hub.evenrealities.com/docs/test/private-testing) を参照してください。
 
