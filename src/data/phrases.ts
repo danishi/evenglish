@@ -1,4 +1,5 @@
 import type { Phrase, PhraseScene } from './types'
+import { PHRASE_KANA } from './kana'
 
 type Row = [en: string, ja: string, note?: string]
 
@@ -225,6 +226,7 @@ function build(scene: PhraseScene, prefix: string, rows: Row[]): Phrase[] {
   return rows.map(([en, ja, note], i) => ({
     id: `${prefix}${String(i + 1).padStart(3, '0')}`,
     en,
+    kana: PHRASE_KANA[en] ?? '',
     ja,
     scene,
     ...(note ? { note } : {}),
