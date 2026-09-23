@@ -1,0 +1,82 @@
+name: Build .ehpk
+
+# main へのプッシュ、v から始まるタグ、プルリクエスト、手動実行でビルドする。
+#  - どの場合も Actions の Artifacts に evenglish.ehpk を置く
+#  - main へのプッシュ / 手動実行では、リリース「latest」の .ehpk を最新ビルドに差し替える
+#  - タグ（v0.1.0 など）では、そのバージョンのリリースを作る
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: Check that the tag matches app.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          app_ver=$(node -p "require('./app.json').version")
+          if [ "v$app_ver" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::タグ $GITHUB_REF_NAME と app.json の version ($app_ver) が一致しません"
+            exit 1
+          fi
+
+      # SDK のバージョンを明示して、実際に使っている SDK に合った min_app_version を付ける
+      - name: Build and pack
+        run: |
+          npm run build
+          sdk_ver=$(node -p "require('./node_modules/@evenrealities/even_hub_sdk/package.json').version")
+          npx evenhub pack app.json dist -o evenglish.ehpk --sdk-ver "$sdk_ver"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evenglish-ehpk
+          path: evenglish.ehpk
+          if-no-files-found: error
+
+      - name: Update the "latest" release
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          app_ver=$(node -p "require('./app.json').version")
+          notes="main の最新ビルドです（app.json の version: ${app_ver} / commit: ${GITHUB_SHA::7}）。
+          evenglish.ehpk をダウンロードして、Even Hub の開発者サイトの Private builds にアップロードしてください。"
+          # タグ latest を今のコミットに付け直してから、リリースの中身を差し替える
+          git tag -f latest
+          git push -f origin refs/tags/latest
+          if gh release view latest >/dev/null 2>&1; then
+            gh release edit latest --prerelease --title "最新ビルド (main)" --notes "$notes"
+          else
+            gh release create latest --prerelease --title "最新ビルド (main)" --notes "$notes"
+          fi
+          gh release upload latest evenglish.ehpk --clobber
+
+      - name: Create a versioned release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" evenglish.ehpk \
+            --title "EvEnglish $GITHUB_REF_NAME" --generate-notes

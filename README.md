@@ -40,7 +40,48 @@ Even Realities G2 のグラスで使う、日本人向けの英語学習アプ�
 
 ---
 
+## いちばん手軽な試し方（パソコンでサーバーを動かさない）
+
+GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自動で作ります。
+それを Even Hub の開発者サイトに「Private build（自分専用のビルド）」としてアップロードすれば、Node.js もパソコンのサーバーも無しでグラスで動かせます。審査はありません。
+
+1. **パッケージをダウンロードする**
+   [Releases](https://github.com/danishi/evenglish/releases) の「最新ビルド (main)」（タグ `latest`）から `evenglish.ehpk` をダウンロードします。
+   `v0.1.0` のようなバージョン付きのリリースがあれば、そちらでもかまいません。
+2. **Even Hub にアップロードする**
+   https://hub.evenrealities.com/login に Even App と同じアカウントでログインし、プロジェクトの **Private builds** タブで `evenglish.ehpk` をアップロードします。
+3. **スマホに入れる**
+   Even App の開発者モードを有効にして、**Even Hub** タブ → **Me → Apps → Private builds** の `EvEnglish` で **Install** をタップします。
+   しばらくするとグラスのホーム画面に EvEnglish が出ます。
+
+- Private build は自分のアカウントでしか使えません。ほかの人にも使ってもらうときは Even Hub の Beta Testing か、審査を通して公開します（[App Submission](https://hub.evenrealities.com/docs/ship/app-submission)）。
+- 同じバージョンのアップロードを受け付けてもらえないときは、`app.json` と `package.json` の `version` を上げてから main にプッシュしてください。
+- 詳しくは公式の [Private Testing](https://hub.evenrealities.com/docs/test/private-testing) を参照してください。
+
+### パッケージが作られるタイミング
+
+`.github/workflows/build.yml` で次のように動きます。どの場合も先に型チェックとテストを通します。
+
+| きっかけ | できるもの |
+|---|---|
+| main へのプッシュ | リリース「最新ビルド (main)」（タグ `latest`）の `evenglish.ehpk` を差し替え |
+| `v0.1.0` のようなタグのプッシュ | そのバージョンのリリースを作成（タグと `app.json` の `version` が違うと失敗します） |
+| プルリクエスト | Actions の実行結果ページの Artifacts に `evenglish-ehpk`（zip。中に `.ehpk`） |
+| Actions タブから手動実行（Run workflow） | main へのプッシュと同じ |
+
+バージョン付きのリリースを作る例です。
+
+```bash
+# app.json と package.json の version を 0.2.0 にしてコミットしたあと
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+---
+
 ## 導入手順（はじめて G2 アプリを動かす人向け）
+
+ここからは、パソコンで開発サーバーを動かして開発・確認する手順です。試すだけなら上の「いちばん手軽な試し方」で足ります。
 
 G2 のアプリ（Even Hub アプリ）は、中身は普通の Web ページです。
 パソコンで開発サーバーを動かし、スマホの Even App がそのページを読み込んで、グラスに画面を送ります。
@@ -147,8 +188,9 @@ npm run pack
 ```
 
 `dist/` にビルドし、`evenglish.ehpk` を作ります。
-`.ehpk` はそのままでは実行できません。Even Hub の開発者向けサイトにアップロードすると、Even App から開けるようになります。
-手順は公式ドキュメントの Packaging / App Submission のページを参照してください。
+`.ehpk` はそのままでは実行できません。Even Hub の開発者向けサイトにアップロードすると、Even App から開けるようになります（手順は「いちばん手軽な試し方」を参照）。
+GitHub Actions でも同じものが自動で作られるので、手元で作る必要はありません。
+公開の手順は公式ドキュメントの Packaging / App Submission のページを参照してください。
 
 `app.json` の `package_id`（`com.danishi.evenglish`）は Even Hub 全体で一意である必要があります。自分で公開する場合は変更してください。
 
@@ -179,7 +221,7 @@ npm run pack
 | `npm test` | テスト（教材のチェック、学習ロジック、画面遷移） |
 | `npm run typecheck` | 型チェック |
 | `npm run build` | 本番ビルド（`dist/`） |
-| `npm run pack` | ビルドして `.ehpk` を作成 |
+| `npm run pack` | ビルドして `.ehpk` を作成（GitHub Actions でも自動で作られます） |
 
 ### ディレクトリ構成
 
@@ -201,6 +243,7 @@ src/
   phone/ui.ts             スマホ側の画面（設定・学習状況・教材一覧）
 tests/                    Vitest のテスト
 app.json                  Even Hub のマニフェスト
+.github/workflows/build.yml  .ehpk を作ってリリースに置く GitHub Actions
 ```
 
 ### 教材を追加する
