@@ -1,0 +1,28 @@
+{
+  "name": "evenglish",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "sim": "node node_modules/@evenrealities/evenhub-simulator/bin/index.js http://localhost:5173",
+    "qr": "evenhub qr --port 5173 --path /",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "pack": "npm run build && evenhub pack app.json dist -o evenglish.ehpk"
+  },
+  "devDependencies": {
+    "@evenrealities/evenhub-cli": "^0.1.14",
+    "@evenrealities/evenhub-simulator": "^0.9.5",
+    "typescript": "~5.9",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "@evenrealities/even_hub_sdk": "^0.0.15",
+    "@evenrealities/pretext": "^0.1.4"
+  },
+  "description": "Even Realities G2 で使える日本人向け英語学習アプリ（Even Hub）"
+}
