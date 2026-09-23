@@ -19,10 +19,11 @@ describe('コンテンツ', () => {
     expect(missingGlyphs(allText())).toEqual([])
   })
 
-  it('すべての単語・フレーズにカタカナ読みがあり、1行に収まる', () => {
+  it('すべての単語・フレーズにアクセントつきのカタカナ読みがあり、1行に収まる', () => {
     for (const x of [...WORDS, ...PHRASES]) {
-      expect(x.kana, x.en).toMatch(/^[ァ-ヴー ]+$/)
-      expect(lineCount(`［${x.kana}］`, TEXT_INNER_W), x.en).toBe(1)
+      // 【】はアクセント。入れ子にせず、中身は空にしない
+      expect(x.kana, x.en).toMatch(/^[ァ-ヴー ]*(【[ァ-ヴー]+】[ァ-ヴー ]*)+$/)
+      expect(lineCount(x.kana, TEXT_INNER_W), x.en).toBe(1)
     }
   })
 

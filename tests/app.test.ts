@@ -91,7 +91,7 @@ describe('GlassesApp', () => {
 
     await send({ type: 'click' })
     expect(display.text()).toContain('覚えた')
-    expect(display.text()).toContain(`［${kana}］`)
+    expect(display.text()).toContain(kana)
     await send({ type: 'click' })
     expect(store.data.cards[firstId].box).toBe(1)
 
