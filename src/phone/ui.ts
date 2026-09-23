@@ -26,7 +26,7 @@ export function mountPhoneUI(
 
   root.innerHTML = `
     <header class="top">
-      <h1>EvEnglish</h1>
+      <h1>EvEnglish <span class="version">v${esc(__APP_VERSION__)}</span></h1>
       <span class="badge ${options.mode}">${options.mode === 'glasses' ? 'G2 接続中' : 'ブラウザプレビュー'}</span>
     </header>
     <section class="card today" data-slot="today"></section>

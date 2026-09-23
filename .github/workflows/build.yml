@@ -1,6 +1,6 @@
 name: Build .ehpk
 
-# main へのプッシュ、v から始まるタグ、プルリクエスト、手動実行でビルドする。
+# main へのプッシュ、v から始まるタグ、手動実行でビルドする（プルリクエストは ci.yml）。
 #  - どの場合も Actions の Artifacts に evenglish.ehpk を置く
 #  - main へのプッシュ / 手動実行では、リリース「latest」を最新ビルドで作り直す
 #  - タグ（v0.1.0 など）では、そのバージョンのリリースを作る
@@ -8,7 +8,6 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-  pull_request:
   workflow_dispatch:
 
 permissions:

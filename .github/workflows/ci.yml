@@ -1,0 +1,31 @@
+name: CI
+
+# プルリクエストでは型チェック・テスト・ビルドが通るかだけを確かめる。
+# .ehpk のパッケージとリリースは build.yml（main / タグ / 手動実行）で行う。
+# ワークフローを分けているのは、build.yml の実行番号をバージョンに使っているため
+# （PR の実行で main のバージョンが飛ばないようにする）
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
