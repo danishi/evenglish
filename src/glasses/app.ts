@@ -4,8 +4,8 @@ import { PHRASES } from '../data/phrases'
 import { LEVEL_LABELS, SCENE_LABELS, type GrammarTopic, type Phrase, type Word } from '../data/types'
 import { WORDS } from '../data/words'
 import type { ProgressStore } from '../core/progress'
-import { buildMixedQuiz, grammarTopicQuiz, shuffle, type QuizItem } from '../core/quiz'
-import { isDue, isMastered, pickSession } from '../core/srs'
+import { QUIZ_MODES, buildQuiz, grammarTopicQuiz, shuffle, type QuizItem, type QuizMode } from '../core/quiz'
+import { isDue, isLearned, isMastered, pickSession } from '../core/srs'
 import { LINE_H, SCREEN_W, lineCount, paginate, progressBar, spread, truncatePx } from '../core/text'
 import type { Box, Display, InputEvent, PageSpec } from './display'
 import { GRAMMAR_BODY_LINES, TEXT_INNER_W, TEXT_MAX_LINES, TEXT_PAD } from './layout'
@@ -19,6 +19,8 @@ export interface Content {
 export const DEFAULT_CONTENT: Content = { words: WORDS, phrases: PHRASES, grammar: GRAMMAR }
 
 type Deck = 'word' | 'phrase'
+/** クイズの出どころ。文法トピックの確認クイズか、クイズメニューで選んだ種類 */
+type QuizFrom = 'topic' | QuizMode
 
 export type Screen =
   | { kind: 'home' }
@@ -26,8 +28,9 @@ export type Screen =
   | { kind: 'sessionDone'; deck: Deck; ok: number; ng: number }
   | { kind: 'grammarList'; page: number }
   | { kind: 'grammar'; topic: number; page: number }
-  | { kind: 'quiz'; items: QuizItem[]; index: number; correct: number; from: 'home' | 'grammar'; picked: number | null }
-  | { kind: 'quizDone'; correct: number; total: number; from: 'home' | 'grammar' }
+  | { kind: 'quizMenu' }
+  | { kind: 'quiz'; items: QuizItem[]; index: number; correct: number; from: QuizFrom; picked: number | null }
+  | { kind: 'quizDone'; correct: number; total: number; from: QuizFrom }
   | { kind: 'stats' }
   | { kind: 'help' }
 
@@ -130,13 +133,14 @@ export class GlassesApp {
     return pool.length ? pool : this.content.phrases
   }
 
-  private deckCounts(deck: Deck): { due: number; fresh: number } {
+  private deckCounts(deck: Deck): { due: number; fresh: number; learned: number } {
     const ids = (deck === 'word' ? this.wordPool() : this.phrasePool()).map((x) => x.id)
     const cards = this.store.data.cards
     const today = this.store.today()
     return {
       due: ids.filter((id) => isDue(cards[id], today)).length,
       fresh: ids.filter((id) => !cards[id] || cards[id].box === 0).length,
+      learned: ids.filter((id) => isLearned(cards[id])).length,
     }
   }
 
@@ -174,9 +178,13 @@ export class GlassesApp {
         return this.onGrammar(s, e)
       case 'quiz':
         return this.onQuiz(s, e)
+      case 'quizMenu':
+        if (e.type === 'double') return this.go({ kind: 'home' })
+        if (e.type === 'click') return this.startQuiz(QUIZ_MODES[e.index ?? 0]?.mode ?? 'mix')
+        return
       case 'quizDone':
-        if (e.type === 'click') return s.from === 'grammar' ? this.go({ kind: 'grammarList', page: 0 }) : this.startQuiz()
-        if (e.type === 'double') return this.go(s.from === 'grammar' ? { kind: 'grammarList', page: 0 } : { kind: 'home' })
+        if (e.type === 'click') return s.from === 'topic' ? this.go({ kind: 'grammarList', page: 0 }) : this.startQuiz(s.from)
+        if (e.type === 'double') return this.go(s.from === 'topic' ? { kind: 'grammarList', page: 0 } : { kind: 'quizMenu' })
         return
       case 'stats':
       case 'help':
@@ -200,7 +208,7 @@ export class GlassesApp {
       case 2:
         return this.go({ kind: 'grammarList', page: 0 })
       case 3:
-        return this.startQuiz()
+        return this.go({ kind: 'quizMenu' })
       case 4:
         return this.go({ kind: 'stats' })
       case 5:
@@ -228,7 +236,7 @@ export class GlassesApp {
       if (e.type === 'click' || e.type === 'down') return this.go({ ...s, revealed: true })
       return
     }
-    // 裏面: タップ=覚えた / 下スワイプ=まだ / 上スワイプ=表に戻す
+    // 裏面: タップ=覚えた / 下スワイプ=まだ / 上スワイプ=答えを隠す
     if (e.type === 'up') return this.go({ ...s, revealed: false })
     const remembered = e.type === 'click'
     if (e.type !== 'click' && e.type !== 'down') return
@@ -284,24 +292,24 @@ export class GlassesApp {
       if (s.page + 1 < pages.length) return this.go({ ...s, page: s.page + 1 })
       if (e.type === 'click') {
         this.store.markGrammarDone(topic.id)
-        return this.go({ kind: 'quiz', items: grammarTopicQuiz(topic), index: 0, correct: 0, from: 'grammar', picked: null })
+        return this.go({ kind: 'quiz', items: grammarTopicQuiz(topic), index: 0, correct: 0, from: 'topic', picked: null })
       }
     }
   }
 
-  startQuiz(): Promise<void> {
-    const items = buildMixedQuiz({
+  startQuiz(mode: QuizMode = 'mix'): Promise<void> {
+    const items = buildQuiz(mode, {
       words: this.wordPool(),
       phrases: this.phrasePool(),
       grammar: this.content.grammar,
       cards: this.store.data.cards,
       size: this.store.data.settings.quizSize,
     })
-    return this.go({ kind: 'quiz', items, index: 0, correct: 0, from: 'home', picked: null })
+    return this.go({ kind: 'quiz', items, index: 0, correct: 0, from: mode, picked: null })
   }
 
   private async onQuiz(s: Extract<Screen, { kind: 'quiz' }>, e: InputEvent): Promise<void> {
-    if (e.type === 'double') return this.go(s.from === 'grammar' ? { kind: 'grammarList', page: 0 } : { kind: 'home' })
+    if (e.type === 'double') return this.go(s.from === 'topic' ? { kind: 'grammarList', page: 0 } : { kind: 'quizMenu' })
     if (e.type !== 'click') return
     const item = s.items[s.index]
     if (s.picked === null) {
@@ -335,6 +343,11 @@ export class GlassesApp {
       }
       case 'grammar':
         return { boxes: [fullText(this.grammarText(s))] }
+      case 'quizMenu':
+        return headerWithList(
+          spread('4択クイズ', `${this.store.data.settings.quizSize}問`, TEXT_INNER_W),
+          QUIZ_MODES.map((m) => m.label),
+        )
       case 'quiz':
         return this.viewQuiz(s)
       case 'quizDone':
@@ -353,8 +366,8 @@ export class GlassesApp {
     const done = this.content.grammar.filter((g) => d.grammarDone[g.id]).length
     const header = spread('Glance English', `今日 ${this.store.todayCount()}/${d.settings.dailyGoal}  連続${d.streak}日`, TEXT_INNER_W)
     return headerWithList(header, [
-      `単語カード   復習 ${w.due} ・ 新規 ${w.fresh}`,
-      `フレーズ     復習 ${p.due} ・ 新規 ${p.fresh}`,
+      `単語カード   復習 ${w.due}・新規 ${w.fresh}・覚えた ${w.learned}`,
+      `フレーズ     復習 ${p.due}・新規 ${p.fresh}・覚えた ${p.learned}`,
       `文法ミニ講座   ${done}/${this.content.grammar.length}`,
       `4択クイズ（${d.settings.quizSize}問）`,
       '学習記録',
@@ -367,12 +380,13 @@ export class GlassesApp {
     const jaFirst = this.store.data.settings.direction === 'ja-en'
     const pos = `${s.index + 1}/${s.ids.length}`
     const frontFooter = 'タップ: 答えを見る　2回タップ: メニュー'
-    const backFooter = 'タップ: 覚えた　↓: まだ　↑: 表に戻す'
+    const backFooter = 'タップ: 覚えた　↓: まだ　↑: 答えを隠す'
+    const score = `○${s.ok} ×${s.ng}`
 
     if (s.deck === 'word') {
       const w = this.content.words.find((x) => x.id === id)!
       const title = `${s.review ? 'おさらい' : '単語'}  ${pos}`
-      const tag = LEVEL_LABELS[w.level]
+      const tag = `${LEVEL_LABELS[w.level]}  ${score}`
       if (!s.revealed) {
         const front = jaFirst ? `\n${w.ja}\n（${w.pos}）` : `\n${w.en}\n（${w.pos}）`
         return composeScreen(title, tag, front, frontFooter)
@@ -382,7 +396,7 @@ export class GlassesApp {
 
     const p = this.content.phrases.find((x) => x.id === id)!
     const title = `${s.review ? 'おさらい' : 'フレーズ'}  ${pos}`
-    const tag = SCENE_LABELS[p.scene]
+    const tag = `${SCENE_LABELS[p.scene]}  ${score}`
     if (!s.revealed) return composeScreen(title, tag, `\n${jaFirst ? p.ja : p.en}`, frontFooter)
     return composeScreen(title, tag, `${p.en}\n${p.kana}\n= ${p.ja}${p.note ? `\n\n${p.note}` : ''}`, backFooter)
   }
@@ -390,9 +404,11 @@ export class GlassesApp {
   private sessionDoneText(s: Extract<Screen, { kind: 'sessionDone' }>): string {
     const d = this.store.data
     const today = this.store.todayCount()
+    const deck = this.deckCounts(s.deck)
+    const total = (s.deck === 'word' ? this.wordPool() : this.phrasePool()).length
     const body = [
       `覚えた ${s.ok}  /  まだ ${s.ng}`,
-      '',
+      `${s.deck === 'word' ? '単語' : 'フレーズ'}の覚えた数  ${deck.learned}/${total}`,
       `今日の学習  ${today}/${d.settings.dailyGoal}`,
       progressBar(today, d.settings.dailyGoal, 14),
       `連続 ${d.streak}日`,
@@ -447,8 +463,9 @@ export class GlassesApp {
     const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0
     const msg = pct === 100 ? 'パーフェクト！' : pct >= 70 ? 'いい調子！' : 'もう一度挑戦してみよう'
     const body = `${s.correct} / ${s.total} 問正解（${pct}%）\n${progressBar(s.correct, s.total, 14)}\n\n${msg}`
-    const footer = s.from === 'grammar' ? 'タップ: 文法一覧へ' : 'タップ: もう一度　2回タップ: メニュー'
-    return composeScreen('クイズ結果', '', body, footer)
+    const footer = s.from === 'topic' ? 'タップ: 文法一覧へ' : 'タップ: もう一度　2回タップ: クイズ選択'
+    const label = s.from === 'topic' ? '文法の確認' : (QUIZ_MODES.find((m) => m.mode === s.from)?.label ?? '')
+    return composeScreen('クイズ結果', label, body, footer)
   }
 
   statsText(): string {
@@ -456,6 +473,7 @@ export class GlassesApp {
     const cards = d.cards
     const count = (items: { id: string }[]) => ({
       seen: items.filter((x) => (cards[x.id]?.seen ?? 0) > 0).length,
+      learned: items.filter((x) => isLearned(cards[x.id])).length,
       mastered: items.filter((x) => isMastered(cards[x.id])).length,
       total: items.length,
     })
@@ -467,8 +485,8 @@ export class GlassesApp {
     const body = [
       `今日　${today}/${d.settings.dailyGoal}  ${progressBar(today, d.settings.dailyGoal, 10)}`,
       `連続学習  ${d.streak}日`,
-      `単語　学習 ${w.seen}/${w.total}　定着 ${w.mastered}`,
-      `フレーズ  学習 ${p.seen}/${p.total}　定着 ${p.mastered}`,
+      `単語　学習 ${w.seen}/${w.total}　覚えた ${w.learned}　定着 ${w.mastered}`,
+      `フレーズ  学習 ${p.seen}/${p.total}　覚えた ${p.learned}　定着 ${p.mastered}`,
       `文法　${g}/${this.content.grammar.length} トピック`,
       `クイズ　正答率 ${acc}%（${d.quiz.answered}問）`,
     ].join('\n')
@@ -478,11 +496,11 @@ export class GlassesApp {
 
 const HELP_TEXT = composeScreen(
   '使い方',
-  '',
+  `v${__APP_VERSION__}`,
   [
     'タップ: 決定 / 答えを見る / 覚えた',
     '↓スワイプ: 次へ / まだ覚えていない',
-    '↑スワイプ: 前へ / カードを表に戻す',
+    '↑スワイプ: 前へ / カードの答えを隠す',
     '2回タップ: 1つ前の画面へ',
     'メニューで2回タップ: アプリ終了',
     '設定はスマホの画面から変更できます',

@@ -69,7 +69,7 @@ describe('コンテンツ', () => {
 
   it('文法クイズは選択肢が4つで重複がなく、1行に収まる', () => {
     for (const g of GRAMMAR) {
-      expect(g.quiz.length, g.title).toBeGreaterThanOrEqual(2)
+      expect(g.quiz.length, g.title).toBeGreaterThanOrEqual(5)
       for (const q of g.quiz) {
         expect(new Set(q.choices).size, q.q).toBe(4)
         expect(q.answer).toBeGreaterThanOrEqual(0)
