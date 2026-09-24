@@ -3,6 +3,8 @@
 Even Realities G2 のグラスで使う、日本人向けの英語学習アプリです。Even Hub アプリとして動きます。
 電車の待ち時間のようなスキマ時間に、単語・フレーズ・文法を少しずつ進められます。
 
+**Even Hub ストアで公開中**：[EvEnglish のストアページ](https://hub.evenrealities.com/landing?package_id=com.danishi.evenglish)から入れられます。
+
 | メニュー | 4択クイズ |
 |---|---|
 | ![メニュー画面](docs/screenshots/home.png) | ![4択クイズ](docs/screenshots/quiz.png) |
@@ -49,6 +51,8 @@ Even Realities G2 のグラスで使う、日本人向けの英語学習アプ�
 ---
 
 ## いちばん手軽な試し方（パソコンでサーバーを動かさない）
+
+使うだけなら [Even Hub のストアページ](https://hub.evenrealities.com/landing?package_id=com.danishi.evenglish) からインストールしてください。以下は、main の最新ビルドなどを自分で入れて試すときの手順です。
 
 GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自動で作ります。
 それを Even Hub の開発者サイトに「Private build（自分専用のビルド）」としてアップロードすれば、Node.js もパソコンのサーバーも無しでグラスで動かせます。審査はありません。
