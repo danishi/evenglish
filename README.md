@@ -1,9 +1,9 @@
-# EvEnglish
+# Glance English
 
 Even Realities G2 のグラスで使う、日本人向けの英語学習アプリです。Even Hub アプリとして動きます。
 電車の待ち時間のようなスキマ時間に、単語・フレーズ・文法を少しずつ進められます。
 
-**Even Hub ストアで公開中**：[EvEnglish のストアページ](https://hub.evenrealities.com/landing?package_id=com.danishi.evenglish)から入れられます。
+**Even Hub ストアで公開中**：[Glance English のストアページ](https://hub.evenrealities.com/landing?package_id=com.danishi.evenglish)から入れられます。
 
 | メニュー | 4択クイズ |
 |---|---|
@@ -63,11 +63,11 @@ GitHub Actions がビルド済みのパッケージ（`evenglish.ehpk`）を自�
 2. **Even Hub にアップロードする**
    https://hub.evenrealities.com/login に Even App と同じアカウントでログインし、プロジェクトの **Private builds** タブで `evenglish.ehpk` をアップロードします。
 3. **スマホに入れる**
-   Even App の開発者モードを有効にして、**Even Hub** タブ → **Me → Apps → Private builds** の `EvEnglish` で **Install** をタップします。
-   しばらくするとグラスのホーム画面に EvEnglish が出ます。
+   Even App の開発者モードを有効にして、**Even Hub** タブ → **Me → Apps → Private builds** の `Glance English` で **Install** をタップします。
+   しばらくするとグラスのホーム画面に Glance English が出ます。
 
 - Private build は自分のアカウントでしか使えません。ほかの人にも使ってもらうときは Even Hub の Beta Testing か、審査を通して公開します（[App Submission](https://hub.evenrealities.com/docs/ship/app-submission)）。
-- main のビルド（手動実行を含む）は、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。このバージョンはスマホ画面のタイトル横（`EvEnglish v0.1.42`）にも表示されます。
+- main のビルド（手動実行を含む）は、`app.json` の `version`（`x.y.z`）の `z` を Actions の実行番号に置き換えます（例: `0.1.0` → `0.1.42`）。ビルドのたびにバージョンが上がるので、アップロードしても前のビルドを差し替えずに新しいバージョンとして追加されます。このバージョンはスマホ画面のタイトル横（`Glance English v0.1.42`）にも表示されます。
 - リリースのノートには、前回のビルド（`latest` は前回の main ビルド、`v0.2.0` のようなタグはひとつ前のタグ）からのコミットをまとめた **Change log** が 500 文字以内で入っています。アップロード時の Change log 欄にそのまま貼り付けられます。
 - 詳しくは公式の [Private Testing](https://hub.evenrealities.com/docs/test/private-testing) を参照してください。
 
@@ -210,6 +210,7 @@ GitHub Actions でも同じものが自動で作られるので、手元で作�
 公開の手順は公式ドキュメントの Packaging / App Submission のページを参照してください。
 
 `app.json` の `package_id`（`com.danishi.evenglish`）は Even Hub 全体で一意である必要があります。自分で公開する場合は変更してください。
+`app.json` の `name` には "Even" を含められません（大文字小文字を問わず。含むと審査で自動的にリジェクトされます）。旧名の EvEnglish もこの理由で Glance English に変えました。`name` はグラスの画面上の表示名と揃えます。
 
 ---
 

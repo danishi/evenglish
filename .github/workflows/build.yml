@@ -111,4 +111,4 @@ jobs:
           \`\`\`"
           # --notes の内容は自動生成のリリースノートの前に入る
           gh release create "$GITHUB_REF_NAME" evenglish.ehpk \
-            --title "EvEnglish $GITHUB_REF_NAME" --notes "$notes" --generate-notes
+            --title "Glance English $GITHUB_REF_NAME" --notes "$notes" --generate-notes
