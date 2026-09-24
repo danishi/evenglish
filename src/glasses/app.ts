@@ -351,7 +351,7 @@ export class GlassesApp {
     const w = this.deckCounts('word')
     const p = this.deckCounts('phrase')
     const done = this.content.grammar.filter((g) => d.grammarDone[g.id]).length
-    const header = spread('EvEnglish', `今日 ${this.store.todayCount()}/${d.settings.dailyGoal}  連続${d.streak}日`, TEXT_INNER_W)
+    const header = spread('Glance English', `今日 ${this.store.todayCount()}/${d.settings.dailyGoal}  連続${d.streak}日`, TEXT_INNER_W)
     return headerWithList(header, [
       `単語カード   復習 ${w.due} ・ 新規 ${w.fresh}`,
       `フレーズ     復習 ${p.due} ・ 新規 ${p.fresh}`,
