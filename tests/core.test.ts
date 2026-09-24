@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { ProgressStore, parseProgress, type KeyValueStorage } from '../src/core/progress'
-import { buildMixedQuiz, grammarQuestion, shuffle } from '../src/core/quiz'
-import { addDays, diffDays, isDue, pickSession, review } from '../src/core/srs'
+import {
+  QUIZ_MODES,
+  accentDistractors,
+  blankExample,
+  buildMixedQuiz,
+  buildQuiz,
+  grammarQuestion,
+  grammarTopicQuiz,
+  shuffle,
+} from '../src/core/quiz'
+import { addDays, diffDays, isDue, isLearned, pickSession, review } from '../src/core/srs'
 import { paginate, lineCount, progressBar } from '../src/core/text'
 import { GRAMMAR } from '../src/data/grammar'
 import { PHRASES } from '../src/data/phrases'
@@ -17,15 +26,20 @@ function seeded(seed = 1) {
 describe('srs', () => {
   it('覚えたらボックスが上がり、次回が先になる', () => {
     let s = review(undefined, true, '2026-01-01')
-    expect(s).toMatchObject({ box: 1, due: '2026-01-02', ok: 1, seen: 1 })
-    s = review(s, true, '2026-01-02')
-    expect(s).toMatchObject({ box: 2, due: '2026-01-04' })
+    // 初見で覚えていたらボックス2から
+    expect(s).toMatchObject({ box: 2, due: '2026-01-03', ok: 1, seen: 1 })
+    expect(isLearned(s)).toBe(true)
+    s = review(s, true, '2026-01-03')
+    expect(s).toMatchObject({ box: 3, due: '2026-01-07' })
+    s = review({ box: 1, due: '2026-01-01', ok: 0, seen: 1 }, true, '2026-01-01')
+    expect(s).toMatchObject({ box: 2, due: '2026-01-03' })
   })
 
   it('まだならボックス1に戻り、今日もう一度出る', () => {
     const s = review({ box: 4, due: '2026-01-01', ok: 3, seen: 3 }, false, '2026-01-10')
     expect(s).toMatchObject({ box: 1, due: '2026-01-10', ok: 3, seen: 4 })
     expect(isDue(s, '2026-01-10')).toBe(true)
+    expect(isLearned(s)).toBe(false)
   })
 
   it('日付計算は月をまたいでも正しい', () => {
@@ -39,7 +53,18 @@ describe('srs', () => {
       b: { box: 1, due: '2026-01-01', ok: 0, seen: 1 },
       c: { box: 3, due: '2026-02-01', ok: 2, seen: 2 },
     }
-    expect(pickSession(['a', 'b', 'c', 'd', 'e'], cards, '2026-01-10', 3)).toEqual(['b', 'a', 'd'])
+    const picked = pickSession(['a', 'b', 'c', 'd', 'e'], cards, '2026-01-10', 3, seeded(5))
+    expect(picked).toHaveLength(3)
+    expect(picked).toEqual(expect.arrayContaining(['a', 'b']))
+    expect(picked).not.toContain('c')
+  })
+
+  it('新規カードはランダムに選ぶ', () => {
+    const ids = Array.from({ length: 50 }, (_, i) => `n${i}`)
+    const a = pickSession(ids, {}, '2026-01-10', 10, seeded(1))
+    const b = pickSession(ids, {}, '2026-01-10', 10, seeded(2))
+    expect(a).not.toEqual(ids.slice(0, 10))
+    expect(a).not.toEqual(b)
   })
 })
 
@@ -74,7 +99,7 @@ describe('progress', () => {
     const reloaded = new ProgressStore(storage, { now: () => now })
     await reloaded.load()
     expect(reloaded.data.streak).toBe(0)
-    expect(reloaded.data.cards.wb001.box).toBe(1)
+    expect(reloaded.data.cards.wb001.box).toBe(2)
   })
 
   it('壊れたデータや古い形式でも読み込める', () => {
@@ -102,6 +127,37 @@ describe('quiz', () => {
       expect(new Set(it.choices).size).toBe(4)
       expect(it.answer).toBeGreaterThanOrEqual(0)
     }
+  })
+
+  it('どの種類のクイズも指定数の4択を作る', () => {
+    for (const { mode } of QUIZ_MODES) {
+      for (const seed of [1, 2, 3]) {
+        const items = buildQuiz(mode, { words: WORDS, phrases: PHRASES, grammar: GRAMMAR, cards: {}, size: 10, rng: seeded(seed) })
+        expect(items, mode).toHaveLength(10)
+        for (const it of items) {
+          expect(it.choices, `${mode} ${it.q}`).toHaveLength(4)
+          expect(new Set(it.choices).size, `${mode} ${it.q}`).toBe(4)
+          expect(it.answer).toBeGreaterThanOrEqual(0)
+        }
+      }
+    }
+  })
+
+  it('例文の穴埋めは見出し語を ___ にする', () => {
+    const w = WORDS.find((x) => x.en === 'borrow')!
+    expect(blankExample(w)).toBe('Can I ___ your pen?')
+    expect(blankExample({ ...w, ex: 'I borrowed it.' })).toBeNull()
+  })
+
+  it('アクセント問題のダミーは正解と別の位置を強く読む', () => {
+    expect(accentDistractors('【ネ】セサリー')).toEqual(['ネ【セ】サリー', 'ネセ【サ】リー', 'ネセサ【リー】'])
+    // フレーズは強く読む語以外から選ぶ
+    expect(accentDistractors('イッツ アップ トゥ 【ユー】')).toEqual(['【イッ】ツ アップ トゥ ユー', 'イッツ 【アッ】プ トゥ ユー', 'イッツ アップ 【トゥ】 ユー'])
+  })
+
+  it('文法トピックの確認クイズは全問を出す', () => {
+    const items = grammarTopicQuiz(GRAMMAR[0], seeded(4))
+    expect(items.map((i) => i.choices[i.answer]).sort()).toEqual(GRAMMAR[0].quiz.map((q) => q.choices[q.answer]).sort())
   })
 
   it('shuffle は要素を失わない', () => {

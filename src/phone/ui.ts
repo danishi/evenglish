@@ -1,5 +1,5 @@
 import type { ProgressStore, Settings } from '../core/progress'
-import { isMastered } from '../core/srs'
+import { isLearned, isMastered } from '../core/srs'
 import { LEVEL_LABELS, SCENE_LABELS, type PhraseScene, type WordLevel } from '../data/types'
 import type { Content } from '../glasses/app'
 
@@ -36,7 +36,7 @@ export function mountPhoneUI(
       <ul class="gestures">
         <li><b>タップ</b>決定 / 答えを見る / 覚えた</li>
         <li><b>↓ スワイプ</b>次へ / まだ覚えていない</li>
-        <li><b>↑ スワイプ</b>前へ / カードを表に戻す</li>
+        <li><b>↑ スワイプ</b>前へ / カードの答えを隠す</li>
         <li><b>2回タップ</b>前の画面へ（メニューでは終了）</li>
       </ul>
     </section>
@@ -77,8 +77,9 @@ export function mountPhoneUI(
     const cards = store.data.cards
     const row = (label: string, ids: string[]) => {
       const seen = ids.filter((id) => (cards[id]?.seen ?? 0) > 0).length
+      const learned = ids.filter((id) => isLearned(cards[id])).length
       const mastered = ids.filter((id) => isMastered(cards[id])).length
-      return `<tr><th>${esc(label)}</th><td>${seen}</td><td>${mastered}</td><td>${ids.length}</td></tr>`
+      return `<tr><th>${esc(label)}</th><td>${seen}</td><td>${learned}</td><td>${mastered}</td><td>${ids.length}</td></tr>`
     }
     const levels = Object.keys(LEVEL_LABELS) as WordLevel[]
     const scenes = Object.keys(SCENE_LABELS) as PhraseScene[]
@@ -87,7 +88,7 @@ export function mountPhoneUI(
     slot('stats').innerHTML = `
       <h2>学習状況</h2>
       <table class="stats">
-        <thead><tr><th></th><th>学習</th><th>定着</th><th>全体</th></tr></thead>
+        <thead><tr><th></th><th>学習</th><th>覚えた</th><th>定着</th><th>全体</th></tr></thead>
         <tbody>
           ${levels.map((l) => row(`単語・${LEVEL_LABELS[l]}`, content.words.filter((w) => w.level === l).map((w) => w.id))).join('')}
           ${scenes.map((s) => row(`フレーズ・${SCENE_LABELS[s]}`, content.phrases.filter((p) => p.scene === s).map((p) => p.id))).join('')}
@@ -130,6 +131,7 @@ export function mountPhoneUI(
     const mark = (id: string) => {
       const c = cards[id]
       if (isMastered(c)) return '<span class="mark m">定着</span>'
+      if (isLearned(c)) return '<span class="mark k">覚えた</span>'
       if (c && c.seen > 0) return '<span class="mark l">学習中</span>'
       return '<span class="mark n">未学習</span>'
     }

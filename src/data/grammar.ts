@@ -17,6 +17,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'I have ___ idea.', choices: ['an', 'a', 'the', '(なし)'], answer: 0, explain: '母音で始まる idea には an' },
       { q: 'Look at ___ moon!', choices: ['the', 'a', 'an', '(なし)'], answer: 0, explain: '1つしかない月には the' },
       { q: "Let's play ___ tennis.", choices: ['(なし)', 'a', 'the', 'an'], answer: 0, explain: 'スポーツ名に冠詞はつけない' },
+      { q: "She's ___ honest person.", choices: ['an', 'a', 'the', '(なし)'], answer: 0, explain: '発音が母音で始まる honest には an' },
+      { q: 'I usually go to ___ bed at 11.', choices: ['(なし)', 'the', 'a', 'an'], answer: 0, explain: 'go to bed（寝る）は冠詞なし' },
     ],
   },
   {
@@ -31,6 +33,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'I ___ to Kyoto three times.', choices: ['have been', 'went', 'have gone', 'am going'], answer: 0, explain: '経験は have been to' },
       { q: 'She ___ the report yesterday.', choices: ['finished', 'has finished', 'have finished', 'finishing'], answer: 0, explain: 'yesterday は過去形と使う' },
       { q: 'We ___ each other since 2015.', choices: ['have known', 'knew', 'know', 'are knowing'], answer: 0, explain: 'since + 起点 → 継続の現在完了' },
+      { q: '___ you ever eaten sushi?', choices: ['Have', 'Did', 'Do', 'Are'], answer: 0, explain: '経験をたずねる → Have you ever' },
+      { q: 'I ___ here for three years.', choices: ['have worked', 'work', 'worked', 'am working'], answer: 0, explain: 'for + 期間で今も続く → 現在完了' },
     ],
   },
   {
@@ -45,6 +49,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'The meeting starts ___ 3 p.m.', choices: ['at', 'on', 'in', 'by'], answer: 0, explain: '時刻の一点は at' },
       { q: "I'll see you ___ Friday.", choices: ['on', 'at', 'in', 'for'], answer: 0, explain: '曜日は on' },
       { q: 'I got ___ the train.', choices: ['on', 'in', 'at', 'to'], answer: 0, explain: '電車・バスは on' },
+      { q: 'I was born ___ 1998.', choices: ['in', 'on', 'at', 'by'], answer: 0, explain: '年は in' },
+      { q: "There's a picture ___ the wall.", choices: ['on', 'in', 'at', 'to'], answer: 0, explain: '壁に接している → on' },
     ],
   },
   {
@@ -60,6 +66,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'Can you give me some ___?', choices: ['advice', 'advices', 'an advice', 'advicing'], answer: 0, explain: 'advice は数えられない' },
       { q: 'How ___ money do you have?', choices: ['much', 'many', 'few', 'lot'], answer: 0, explain: 'money は数えられない → much' },
       { q: 'I have ___ friends in Osaka.', choices: ['a few', 'a little', 'much', 'a'], answer: 0, explain: 'friends は数えられる → a few' },
+      { q: 'I need ___ information.', choices: ['some', 'an', 'many', 'a few'], answer: 0, explain: 'information は数えられない' },
+      { q: 'There are ___ people here.', choices: ['a lot of', 'much', 'a little', 'an'], answer: 0, explain: 'people は数えられる複数' },
     ],
   },
   {
@@ -75,6 +83,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'I finished ___ the book.', choices: ['reading', 'to read', 'read', 'reads'], answer: 0, explain: 'finish は動名詞をとる' },
       { q: 'She decided ___ abroad.', choices: ['to study', 'studying', 'study', 'studied'], answer: 0, explain: 'decide は to不定詞をとる' },
       { q: "Don't forget ___ me.", choices: ['to call', 'calling', 'call', 'called'], answer: 0, explain: 'これからすること → to' },
+      { q: 'I enjoy ___ with friends.', choices: ['talking', 'to talk', 'talk', 'talked'], answer: 0, explain: 'enjoy は動名詞をとる' },
+      { q: 'I want ___ Hawaii someday.', choices: ['to visit', 'visiting', 'visit', 'visited'], answer: 0, explain: 'want は to不定詞をとる' },
     ],
   },
   {
@@ -89,6 +99,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "You ___ come if you're busy.", choices: ["don't have to", 'must not', 'should', 'had better'], answer: 0, explain: '「来なくてもいい」は don\'t have to' },
       { q: '___ you open the window?', choices: ['Would', 'Must', 'Should', 'Had'], answer: 0, explain: '丁寧な依頼は Would/Could you' },
       { q: 'You ___ smoke here. It\'s illegal.', choices: ['must not', "don't have to", 'need not', 'may'], answer: 0, explain: '禁止は must not' },
+      { q: "It's late. You ___ go home.", choices: ['should', 'must not', 'may not', "don't have to"], answer: 0, explain: '「〜したほうがいい」は should' },
+      { q: '___ I use your phone?', choices: ['May', 'Must', 'Should', 'Would'], answer: 0, explain: '許可を求める → May / Can I' },
     ],
   },
   {
@@ -105,6 +117,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'This one is ___ than that one.', choices: ['cheaper', 'more cheap', 'cheapest', 'cheap'], answer: 0, explain: '短い語は -er' },
       { q: "She's ___ better at math now.", choices: ['much', 'very', 'more', 'most'], answer: 0, explain: '比較級の強調は much' },
       { q: 'Tokyo is ___ as Osaka.', choices: ['not as quiet', 'not quiet', 'not quieter', 'not so quieter'], answer: 0, explain: 'not as ... as で「〜ほど…でない」' },
+      { q: "This is the ___ movie I've seen.", choices: ['best', 'better', 'good', 'most good'], answer: 0, explain: 'good の最上級は best' },
+      { q: 'Please speak more ___.', choices: ['slowly', 'slow', 'slower', 'slowest'], answer: 0, explain: '動詞を説明するのは副詞 → more slowly' },
     ],
   },
   {
@@ -120,6 +134,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'English ___ in many countries.', choices: ['is spoken', 'speaks', 'is speaking', 'spoke'], answer: 0, explain: '言語は「話される」→ is spoken' },
       { q: "I'm very ___ in history.", choices: ['interested', 'interesting', 'interest', 'interests'], answer: 0, explain: '人が興味を持つ → interested' },
       { q: 'The package ___ yesterday.', choices: ['was delivered', 'delivered', 'is delivered', 'has delivered'], answer: 0, explain: '過去の受け身 was + 過去分詞' },
+      { q: 'This bridge ___ in 1990.', choices: ['was built', 'built', 'is built', 'has build'], answer: 0, explain: '過去の受け身 was + 過去分詞' },
+      { q: 'The window was broken ___ Tom.', choices: ['by', 'with', 'from', 'of'], answer: 0, explain: '「誰によって」は by' },
     ],
   },
   {
@@ -135,6 +151,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'The man ___ called you is my boss.', choices: ['who', 'which', 'what', 'whose'], answer: 0, explain: '人が主語 → who' },
       { q: "That's not ___ I meant.", choices: ['what', 'that', 'which', 'who'], answer: 0, explain: '「〜すること」は what' },
       { q: 'I lost the watch ___ he gave me.', choices: ['that', 'who', 'what', 'whose'], answer: 0, explain: '物 → that / which' },
+      { q: 'I have a friend ___ father is a doctor.', choices: ['whose', 'who', 'which', 'that'], answer: 0, explain: '「その人の〜」は whose' },
+      { q: 'This is the book ___ changed my life.', choices: ['that', 'who', 'what', 'where'], answer: 0, explain: '物が主語 → that / which' },
     ],
   },
   {
@@ -149,6 +167,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'If I ___ rich, I would travel.', choices: ['were', 'am', 'be', 'will be'], answer: 0, explain: '仮定法過去 → were' },
       { q: 'I wish I ___ a car.', choices: ['had', 'have', 'will have', 'having'], answer: 0, explain: 'wish + 過去形' },
       { q: 'If I had left early, I ___ the bus.', choices: ["would've caught", 'would catch', 'caught', 'will catch'], answer: 0, explain: '過去の反対 → would have + 過去分詞' },
+      { q: 'If I ___ you, I would ask her.', choices: ['were', 'am', 'was being', 'will be'], answer: 0, explain: 'If I were you（私があなたなら）' },
+      { q: "If it ___ tomorrow, we'll stay home.", choices: ['rains', 'will rain', 'rained', 'would rain'], answer: 0, explain: '現実に起こりうる条件は現在形' },
     ],
   },
   {
@@ -164,6 +184,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'Please ___ me know.', choices: ['let', 'make', 'get', 'take'], answer: 0, explain: 'Let me know. 知らせて' },
       { q: 'I had my car ___.', choices: ['repaired', 'repair', 'to repair', 'repairing'], answer: 0, explain: 'have + 物 + 過去分詞' },
       { q: 'I got him ___ me.', choices: ['to help', 'help', 'helped', 'helping'], answer: 0, explain: 'get 人 to do' },
+      { q: 'My boss made me ___ late.', choices: ['work', 'to work', 'working', 'worked'], answer: 0, explain: 'make 人 + 動詞の原形' },
+      { q: 'I need to get my hair ___.', choices: ['cut', 'cutting', 'to cut', 'cuts'], answer: 0, explain: 'get + 物 + 過去分詞（cut は同形）' },
     ],
   },
   {
@@ -177,6 +199,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'Do you know where ___?', choices: ['she lives', 'does she live', 'lives she', 'she does live'], answer: 0, explain: '間接疑問は 主語+動詞 の語順' },
       { q: "I'm not sure ___ he'll come.", choices: ['if', 'that', 'what', 'which'], answer: 0, explain: 'Yes/No の内容 → if' },
       { q: 'Tell me what ___.', choices: ['you want', 'do you want', 'want you', 'you do want'], answer: 0, explain: '疑問詞 + 主語 + 動詞' },
+      { q: 'Could you tell me ___ the station is?', choices: ['where', 'where is', 'is where', 'what'], answer: 0, explain: '疑問詞 + 主語 + 動詞' },
+      { q: 'I wonder ___ it will rain.', choices: ['whether', 'what', 'that', 'which'], answer: 0, explain: 'Yes/No の内容 → whether / if' },
     ],
   },
   {
@@ -191,6 +215,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "The phone's ringing. I ___ get it.", choices: ["'ll", "'m going", 'am', 'was'], answer: 0, explain: 'その場で決めたことは will' },
       { q: 'Look at those clouds! It ___ rain.', choices: ['is going to', 'is raining to', 'will to', 'goes to'], answer: 0, explain: '根拠のある予測は be going to' },
       { q: 'I ___ Ken tonight. We made plans.', choices: ['am meeting', 'met', 'meeting', 'have met'], answer: 0, explain: '約束済みの予定は現在進行形' },
+      { q: "I'm ___ visit my grandma this weekend.", choices: ['going to', 'will', 'go to', 'going'], answer: 0, explain: '前から決めていた予定 → be going to' },
+      { q: 'I think he ___ like this gift.', choices: ['will', 'is going', 'is', 'going to'], answer: 0, explain: '意見・予想の I think ... will' },
     ],
   },
   {
@@ -205,6 +231,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'I thought you ___ at home.', choices: ['were', 'are being', 'will be', 'be'], answer: 0, explain: 'thought に合わせて過去形' },
       { q: 'She said she ___ help me.', choices: ['would', 'will be', 'can to', 'is'], answer: 0, explain: 'will は would にずらす' },
       { q: 'He told me he ___ tired.', choices: ['was', 'is being', 'were', 'be'], answer: 0, explain: 'told に合わせて was' },
+      { q: 'She said she ___ busy.', choices: ['was', 'is being', 'be', 'were'], answer: 0, explain: 'said に合わせて was' },
+      { q: 'I knew he ___ lying.', choices: ['was', 'is', 'has', 'be'], answer: 0, explain: 'knew に合わせて was' },
     ],
   },
   {
@@ -219,6 +247,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'Who is the girl ___ by the door?', choices: ['standing', 'stood', 'stands', 'to stand'], answer: 0, explain: '「立っている」→ 現在分詞' },
       { q: 'I bought a ___ car. (中古車)', choices: ['used', 'using', 'use', 'uses'], answer: 0, explain: '「使われた」→ 過去分詞' },
       { q: 'This is a photo ___ in Kyoto.', choices: ['taken', 'taking', 'took', 'takes'], answer: 0, explain: '写真は「撮られた」→ taken' },
+      { q: 'Look at the ___ baby.', choices: ['sleeping', 'slept', 'sleeps', 'sleep'], answer: 0, explain: '「眠っている」→ 現在分詞' },
+      { q: 'English is a language ___ all over the world.', choices: ['spoken', 'speaking', 'spoke', 'speaks'], answer: 0, explain: '言語は「話される」→ 過去分詞' },
     ],
   },
   {
@@ -233,6 +263,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: '___ tired, I went to bed early.', choices: ['Feeling', 'Felt', 'To feel', 'Feel'], answer: 0, explain: '私が「感じて」→ -ing' },
       { q: '___ in easy English, the book sells well.', choices: ['Written', 'Writing', 'Wrote', 'Write'], answer: 0, explain: '本は「書かれた」→ 過去分詞' },
       { q: '___ what to do, she asked me.', choices: ['Not knowing', 'Knowing not', "Don't know", 'Not known'], answer: 0, explain: '否定は not を分詞の前に' },
+      { q: '___ down the street, I met Ken.', choices: ['Walking', 'Walked', 'Walk', 'To walking'], answer: 0, explain: '私が「歩いていて」→ -ing' },
+      { q: '___ from here, the tower looks small.', choices: ['Seen', 'Seeing', 'Saw', 'See'], answer: 0, explain: 'タワーは「見られる」→ 過去分詞' },
     ],
   },
   {
@@ -247,6 +279,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'The news was really ___.', choices: ['surprising', 'surprised', 'surprise', 'surprises'], answer: 0, explain: 'ニュースは驚きを与える側' },
       { q: 'I was so ___ about the trip.', choices: ['excited', 'exciting', 'excite', 'excites'], answer: 0, explain: '人がワクワクする → -ed' },
       { q: "This map is ___. I'm lost.", choices: ['confusing', 'confused', 'confuse', 'confusion'], answer: 0, explain: '地図が混乱させる → -ing' },
+      { q: 'The movie was ___. I fell asleep.', choices: ['boring', 'bored', 'bore', 'bores'], answer: 0, explain: '映画が退屈させる → -ing' },
+      { q: "I'm ___. What should I do?", choices: ['confused', 'confusing', 'confuse', 'confuses'], answer: 0, explain: '人が混乱している → -ed' },
     ],
   },
   {
@@ -262,6 +296,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "Let's ___ the problem.", choices: ['discuss', 'discuss about', 'discuss on', 'discuss with'], answer: 0, explain: 'discuss は前置詞なし' },
       { q: 'She ___ him last year.', choices: ['married', 'married with', 'married to', 'marry with'], answer: 0, explain: 'marry 人 で「〜と結婚する」' },
       { q: 'I was tired, so I ___ down.', choices: ['lay', 'laid', 'lied', 'layed'], answer: 0, explain: 'lie(横になる)の過去は lay' },
+      { q: 'We ___ at the hotel at 9.', choices: ['arrived', 'arrived to', 'reached at', 'got'], answer: 0, explain: 'arrive at（自動詞）/ reach 場所（他動詞）' },
+      { q: 'Please ___ the room.', choices: ['enter', 'enter into', 'enter to', 'enter in'], answer: 0, explain: '部屋に入る enter は前置詞なし' },
     ],
   },
   {
@@ -276,6 +312,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "You're tired, ___?", choices: ["aren't you", "don't you", 'are you', "isn't it"], answer: 0, explain: "be動詞の肯定 → aren't you" },
       { q: 'He went home, ___?', choices: ["didn't he", "doesn't he", "wasn't he", 'did he'], answer: 0, explain: "過去の一般動詞 → didn't" },
       { q: "Let's have lunch, ___?", choices: ['shall we', "don't we", 'will we', "let's we"], answer: 0, explain: "Let's には shall we" },
+      { q: "She can't swim, ___?", choices: ['can she', "can't she", 'does she', "doesn't she"], answer: 0, explain: '否定文には肯定の付加疑問' },
+      { q: "It's a nice day, ___?", choices: ["isn't it", "doesn't it", 'is it', "isn't this"], answer: 0, explain: "is の肯定 → isn't it" },
     ],
   },
   {
@@ -290,6 +328,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "Don't you eat fish?（食べない場合）", choices: ["No, I don't.", "Yes, I don't.", 'Yes, I do.', 'No, I do.'], answer: 0, explain: '食べない → No, I don\'t.' },
       { q: "Aren't you hungry?（空いている場合）", choices: ['Yes, I am.', "No, I'm not.", "Yes, I'm not.", 'No, I am.'], answer: 0, explain: '空いている → Yes, I am.' },
       { q: "You didn't call me, did you?\n（電話した場合）", choices: ['Yes, I did.', "No, I didn't.", "Yes, I didn't.", 'No, I did.'], answer: 0, explain: '電話した → Yes, I did.' },
+      { q: "Didn't you go?（行った場合）", choices: ['Yes, I did.', "No, I didn't.", "Yes, I didn't.", 'No, I did.'], answer: 0, explain: '行った → Yes, I did.' },
+      { q: "Isn't he coming?（来ない場合）", choices: ["No, he isn't.", 'Yes, he is.', "Yes, he isn't.", 'No, he is.'], answer: 0, explain: "来ない → No, he isn't." },
     ],
   },
   {
@@ -304,6 +344,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'This is the café ___ we first met.', choices: ['where', 'which', 'what', 'who'], answer: 0, explain: '場所 + 完全な文 → where' },
       { q: 'I visited the museum ___ you told me about.', choices: ['which', 'where', 'when', 'what'], answer: 0, explain: 'about の目的語 → which' },
       { q: 'Summer is the season ___ I feel best.', choices: ['when', 'where', 'which', 'what'], answer: 0, explain: '時を説明する → when' },
+      { q: 'I remember the day ___ we met.', choices: ['when', 'where', 'which', 'what'], answer: 0, explain: '日を説明する → when' },
+      { q: "That's the reason ___ I quit.", choices: ['why', 'where', 'what', 'which'], answer: 0, explain: '理由を説明する → why' },
     ],
   },
   {
@@ -318,6 +360,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'Can you ___ me the way?', choices: ['tell', 'say', 'speak', 'talk'], answer: 0, explain: '人に伝える → tell 人' },
       { q: 'How do you ___ this word?', choices: ['say', 'tell', 'talk', 'speak to'], answer: 0, explain: '言葉そのものを言う → say' },
       { q: 'Do you ___ French?', choices: ['speak', 'talk', 'say', 'tell'], answer: 0, explain: '言語を話す → speak' },
+      { q: 'Can I ___ to you for a minute?', choices: ['talk', 'say', 'tell', 'speak about'], answer: 0, explain: 'talk to 人（話をする）' },
+      { q: 'He ___ me a funny story.', choices: ['told', 'said', 'spoke', 'talked'], answer: 0, explain: 'tell 人 物（話を聞かせる）' },
     ],
   },
   {
@@ -332,6 +376,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: 'I was wondering ___ you could help.', choices: ['if', 'that', 'what', 'when'], answer: 0, explain: 'wonder if で「〜かなと思う」' },
       { q: 'Would you mind ___ the door?', choices: ['closing', 'to close', 'close', 'closed'], answer: 0, explain: 'mind の後ろは -ing' },
       { q: 'Would you mind waiting?\n快く引き受ける返事は？', choices: ['Not at all.', 'Yes, I do.', 'Yes, I would.', 'Yes, I mind.'], answer: 0, explain: '「嫌じゃない」→ Not at all.' },
+      { q: '___ you mind if I sat here?', choices: ['Would', 'Will', 'Do', 'Are'], answer: 0, explain: 'Would you mind if + 過去形 がより丁寧' },
+      { q: 'Could you possibly ___ me a hand?', choices: ['give', 'giving', 'to give', 'gave'], answer: 0, explain: 'Could you の後ろは動詞の原形' },
     ],
   },
   {
@@ -346,6 +392,8 @@ export const GRAMMAR: GrammarTopic[] = [
       { q: "It's dark. Please ___.", choices: ['turn it on', 'turn on it', 'it turn on', 'on turn it'], answer: 0, explain: '代名詞は動詞と副詞の間' },
       { q: "I lost my key. I'm ___.", choices: ['looking for it', 'looking it for', 'looking it', 'for looking it'], answer: 0, explain: 'look for は分けられない' },
       { q: 'Your coat is on the floor. ___!', choices: ['Pick it up', 'Pick up it', 'Up pick it', 'It pick up'], answer: 0, explain: 'pick 代名詞 up の語順' },
+      { q: 'That shirt looks nice. ___.', choices: ['Try it on', 'Try on it', 'It try on', 'On try it'], answer: 0, explain: 'try 代名詞 on の語順' },
+      { q: 'I ran ___ an old friend.', choices: ['into', 'it into', 'on', 'to'], answer: 0, explain: 'run into（偶然会う）は分けられない' },
     ],
   },
 ]

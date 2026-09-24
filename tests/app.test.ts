@@ -93,7 +93,8 @@ describe('GlassesApp', () => {
     expect(display.text()).toContain('覚えた')
     expect(display.text()).toContain(kana)
     await send({ type: 'click' })
-    expect(store.data.cards[firstId].box).toBe(1)
+    expect(store.data.cards[firstId].box).toBe(2)
+    expect(display.text()).toContain('○1 ×0')
 
     await send({ type: 'click' })
     await send({ type: 'down' })
@@ -111,8 +112,11 @@ describe('GlassesApp', () => {
     }
     expect(app.screen.kind).toBe('sessionDone')
     expect(display.text()).toContain('覚えた 3')
+    expect(display.text()).toContain('フレーズの覚えた数  3/')
     await send({ type: 'double' })
     expect(app.screen.kind).toBe('home')
+    // 覚えた数がメニューにも出る
+    expect(display.text(1)).toMatch(/フレーズ.*覚えた 3/)
   })
 
   it('全カードの表・裏が1画面に収まる', async () => {
@@ -185,8 +189,30 @@ describe('GlassesApp', () => {
     }
   })
 
+  it('4択クイズ: 種類を選んで出題し、2回タップで種類選択に戻る', async () => {
+    await send({ type: 'click', index: 3 })
+    expect(app.screen.kind).toBe('quizMenu')
+    checkPage(display.last)
+    const menu = (display.last.boxes[1] as { items: string[] }).items
+    for (let i = 0; i < menu.length; i++) {
+      await send({ type: 'click', index: i })
+      const quiz = app.screen as Extract<typeof app.screen, { kind: 'quiz' }>
+      expect(quiz.kind).toBe('quiz')
+      for (const item of quiz.items) {
+        app.screen = { ...quiz, items: [item], picked: null }
+        checkPage(app.view())
+        app.screen = { ...quiz, items: [item], picked: (item.answer + 1) % 4 }
+        checkPage(app.view())
+      }
+      app.screen = quiz
+      await send({ type: 'double' })
+      expect(app.screen.kind).toBe('quizMenu')
+    }
+  })
+
   it('4択クイズ: 不正解でも解説が出て次に進める', async () => {
     await send({ type: 'click', index: 3 })
+    await send({ type: 'click', index: 0 })
     const quiz = app.screen as Extract<typeof app.screen, { kind: 'quiz' }>
     expect(quiz.items).toHaveLength(10)
     const wrong = (quiz.items[0].answer + 1) % 4
@@ -204,6 +230,7 @@ describe('GlassesApp', () => {
     await send({ type: 'click' })
     await send({ type: 'click', index: 5 })
     checkPage(display.last)
+    expect(display.text()).toContain(`v${__APP_VERSION__}`)
     await send({ type: 'double' })
     expect(app.screen.kind).toBe('home')
   })
